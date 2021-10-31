@@ -1,0 +1,39 @@
+create user Spring_boot with password 'password';
+create database clientdb with template=template0 owner=Spring_boot;
+\connect clientdb;
+alter default  privileges  grant all on tables to Spring_boot;
+alter default  privileges  grant all on sequences to Spring_boot;
+
+create table Sb_users(
+    user_id integer primary key not null,
+    first_name varchar(20) not null,
+    last_name varchar(20) not null,
+    email varchar(30) not null,
+    password text not null
+);
+
+create table Sb_categories(
+    category_id integer primary key not null,
+    user_id integer not null,
+    title varchar(20) not null,
+    description varchar(50) not null
+);
+alter table Sb_categories add constraint cat_users_fk
+foreign key (user_id) references Sb_users(user_id);
+
+create table Sb_transaction(
+    transaction_id integer primary key not null,
+    category_id integer not null,
+    user_id integer not null,
+    amount numeric(18, 2) not null,
+    note varchar(50) not null,
+    transaction_date bigint not null
+);
+alter table Sb_transaction add constraint trans_cat_fk
+foreign key (category_id) references Sb_categories(category_id);
+alter table Sb_transaction add constraint trans_users_fk
+foreign key (user_id) references Sb_users(user_id);
+
+create sequence Sb_users_seq increment 1 start 1;
+create sequence Sb_categories_seq increment 1 start 1;
+create sequence Sb_transaction_seq increment 1 start 1000;
