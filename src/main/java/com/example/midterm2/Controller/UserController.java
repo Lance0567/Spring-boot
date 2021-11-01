@@ -6,10 +6,14 @@ import com.example.midterm2.Repositories.UserRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.midterm2.Status.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/")
@@ -42,14 +46,26 @@ public class UserController {
     }
 
     //save user
-    @PostMapping("/customer")
-    public User registerUser(@RequestBody User user) {
-        return this.userRepository.save(user);
+    @PostMapping("/customer/register")
+    public Status registerUser(@RequestBody User user) {
+        userRepository.save(user);
+        return Status.Registered_Successfully;
+    }
+
+    // login user
+    @PostMapping("/customer/login")
+    public Status loginCustomers(@Valid @RequestBody User users) {
+        List<User> user = userRepository.findAll();
+        for (User other : user) {
+            if (other.equals(users)) {
+                return Status.Successful_Login;
+            }
+        }        return Status.Invalid_Details;
     }
 
     //update user
-    @PutMapping("/customer/{id}")
-    public ResponseEntity<User> updateUser(
+    @PutMapping("/customer/update/{id}")
+    public Status updateUser(
             @PathVariable(value = "id") Long userId,
             @Validated @RequestBody User userDetails
     )
@@ -64,15 +80,15 @@ public class UserController {
                 );
 
         user.setEmail(userDetails.getEmail());
-        user.setLastName(userDetails.getLastName());
-        user.setFirstName(userDetails.getFirstName());
+        user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
         final User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
+        ResponseEntity.ok(updatedUser);
+        return Status.Updated_Successfully;
     }
 
     //delete user
-    @DeleteMapping("/customer/{id}")
+    @DeleteMapping("/customer/deleteAll/{id}")
     public Map<String, Boolean> deleteUser(
             @PathVariable(value = "id") Long userId
     )
@@ -87,7 +103,7 @@ public class UserController {
                 );
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        response.put("Message : Deleted Successfully", Boolean.TRUE);
         return response;
     }
 }

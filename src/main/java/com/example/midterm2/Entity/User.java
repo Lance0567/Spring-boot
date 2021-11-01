@@ -1,6 +1,9 @@
 package com.example.midterm2.Entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "customer")
@@ -10,26 +13,34 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "email")
+    @Column(nullable = false, unique = true, length = 45)
     private String email;
 
-    @Column(name = "password")
+    @Column(nullable = false, length = 25)
+    private String username;
+
+    @Column(nullable = false, length = 50)
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            mappedBy = "user")
+    private Set<Item> items = new HashSet<>();
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(String email, String username, String password) {
         this.email = email;
+        this.username = username;
         this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {
@@ -38,22 +49,6 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstname) {
-        this.firstName = firstname;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -70,5 +65,19 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user= (User) o;
+        return Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, username, password);
     }
 }
