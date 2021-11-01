@@ -54,13 +54,24 @@ public class UserController {
 
     // login user
     @PostMapping("/customer/login")
-    public Status loginCustomers(@Valid @RequestBody User users) {
-        List<User> user = userRepository.findAll();
-        for (User other : user) {
-            if (other.equals(users)) {
+    public Status loginUser(@Valid @RequestBody User user) {
+        List<User> users = userRepository.findAll();
+        for (User login : users) {
+            if (login.equals(user)) {
                 return Status.Successful_Login;
             }
         }        return Status.Invalid_Details;
+    }
+
+    // logout user
+    @PostMapping("/customer/logout")
+    public Status logoutUser(@Valid @RequestBody User user) {
+        List<User> users = userRepository.findAll();
+        for (User logout : users) {
+            if (logout.equals(user)) {
+                return Status.Logout_Successful;
+            }
+        }   return Status.Invalid_Details;
     }
 
     //update user
@@ -88,9 +99,9 @@ public class UserController {
     }
 
     //delete user
-    @DeleteMapping("/customer/deleteAll/{id}")
+    @DeleteMapping("/customer/delete/{userId}")
     public Map<String, Boolean> deleteUser(
-            @PathVariable(value = "id") Long userId
+            @PathVariable(value = "userId") Long userId
     )
             throws ResourceNotFoundException {
         User user = userRepository
@@ -98,12 +109,19 @@ public class UserController {
                 .orElseThrow(
                         () ->
                                 new ResourceNotFoundException(
-                                        "Employee not found for this id :: " + userId
+                                        "User not found for this id :: " + userId
                                 )
                 );
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
         response.put("Message : Deleted Successfully", Boolean.TRUE);
         return response;
+    }
+
+    // delete all users
+    @DeleteMapping("/customers/deleteAll")
+    public Status deleteUsers() {
+        userRepository.deleteAll();
+        return Status.Successfully_Deleted;
     }
 }

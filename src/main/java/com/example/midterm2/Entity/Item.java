@@ -1,40 +1,30 @@
 package com.example.midterm2.Entity;
-
-import org.hibernate.validator.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "item")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false, length = 30)
     private String item_name;
 
-    @NotBlank
+    @Column(nullable = false, length = 50)
     private String category_name;
 
-    @NotBlank
+    @Column(nullable = false, length = 100000)
     private int price;
 
     public Item() {
     }
 
-    public Item(@NotBlank String item_name,
-                @NotBlank String category_name,
-                @NotBlank int price) {
-        this.item_name = item_name;
-        this.category_name = category_name;
-        this.price = price;
-    }
-
-    public Item(@NotBlank String item_name,
-                @NotBlank String category_name,
-                @NotBlank Integer price) {
+    public Item( String item_name, String category_name, int price) {
         this.item_name = item_name;
         this.category_name = category_name;
         this.price = price;
@@ -109,8 +99,7 @@ public class Item {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "customerid", nullable = false)
     private User user;
 
-    // Getters and Setters (Omitted for brevity)
 }

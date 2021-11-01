@@ -1,14 +1,14 @@
 package com.example.midterm2.Controller;
 
 import com.example.midterm2.Entity.Item;
-import com.example.midterm2.Entity.User;
 import com.example.midterm2.Exepception.ResourceNotFoundException;
 import com.example.midterm2.Repositories.ItemRepository;
 import com.example.midterm2.Repositories.UserRepository;
+import com.example.midterm2.Status.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,48 +34,55 @@ public class ItemController {
         return itemRepository.findByUserId(id);
     }
 
-    @PostMapping("/customer/{customerid}/items")
+    @PostMapping("/customer/{userId}/items")
     public Item createItem(@PathVariable (value = "userId") Long userId,
-                           @Valid @RequestBody Item item) throws ResourceNotFoundException {
-        return userRepository.findById(userId).map(user -> {
-            item.setCustomer(user);
+                            @Validated @RequestBody Item item) throws ResourceNotFoundException {
+        return userRepository.findById(userId).map(customer -> {
+            item.setCustomer(customer);
             return itemRepository.save(item);
         }).orElseThrow(() -> new ResourceNotFoundException("Customer id " + userId + " not found"));
     }
 
-    @PutMapping("/customer/{customerid}/items/{itemid}")
-    public Item updateItem(@PathVariable (value = "customerid") Long customerid,
-                           @PathVariable (value = "itemid") Long itemid,
-                           @Valid @RequestBody Item itemRequest) throws ResourceNotFoundException {
-        if(!userRepository.existsById(customerid)) {
-            throw new ResourceNotFoundException("Item id " + customerid + " not found");
+    @PutMapping("/customer/{userId}/items/{itemId}")
+    public Item updateItem(@PathVariable (value = "userId") Long customerId,
+                           @PathVariable (value = "itemId") Long itemId,
+                           @Validated @RequestBody Item itemRequest) throws ResourceNotFoundException {
+        if(!userRepository.existsById(customerId)) {
+            throw new ResourceNotFoundException("Item id " + customerId + " not found");
         }
 
-        return itemRepository.findById(itemid).map(item -> {
+        return itemRepository.findById(itemId).map(item -> {
             item.setItem_name(itemRequest.getItem_name());
             item.setCategory_name(itemRequest.getCategory_name());
             item.setPrice(itemRequest.getPrice());
+            System.out.println("Item Successfully updated");
             return itemRepository.save(item);
-        }).orElseThrow(() -> new ResourceNotFoundException("Customer id " + itemid + "not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("User id " + itemId + "not found"));
     }
 
 
-    @DeleteMapping(value = "/customer/{customerid}/items/{itemid}")
-    public Map<String, Boolean> deleteUser(
-            @PathVariable(value = "id") Long itemid
+    @DeleteMapping(value = "/customer/{userid}/items/{itemId}")
+    public Map<String, Boolean> deleteItem(
+            @PathVariable(value = "userid") Long itemId
     )
             throws ResourceNotFoundException {
-        User item = userRepository
-                .findById(itemid)
+        Item item = itemRepository
+                .findById(itemId)
                 .orElseThrow(
                         () ->
                                 new ResourceNotFoundException(
-                                        "Employee not found for this id :: " + itemid
+                                        "Item not found for this id :: " + itemId
                                 )
                 );
-        userRepository.delete(item);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("Message : Deleted Successfully", Boolean.TRUE);
-        return response;
+        itemRepository.delete(item);
+        Map<String, Boolean> response2 = new HashMap<>();
+        response2.put("Message : Deleted Successfully", Boolean.TRUE);
+        return response2;
+    }
+
+    @DeleteMapping("/customer/all/deleteAllItems")
+    public Status deleteItems() {
+        itemRepository.deleteAll();
+        return Status.Successfully_Deleted;
     }
 }
