@@ -1,4 +1,4 @@
-package com.example.midterm2.Controller;
+package com.example.midterm2.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

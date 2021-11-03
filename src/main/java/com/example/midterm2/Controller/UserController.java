@@ -1,7 +1,7 @@
 package com.example.midterm2.Controller;
 
 import com.example.midterm2.Entity.User;
-import com.example.midterm2.Exepception.ResourceNotFoundException;
+import com.example.midterm2.Exceptions.ResourceNotFoundException;
 import com.example.midterm2.Repositories.UserRepository;
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +22,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    //get users
+    // Get users
     @GetMapping("/customer")
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
     }
 
-    //get user by id
+    // Get user by id
     @GetMapping("/customer/{id}")
     public ResponseEntity<User> getUserById(
             @PathVariable(value = "id") Long userId
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    //save user
+    // Save user
     @PostMapping("/customer/register")
     public Status registerUser(@RequestBody User user) {
         userRepository.save(user);
