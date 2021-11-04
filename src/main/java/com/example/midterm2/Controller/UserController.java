@@ -1,5 +1,6 @@
 package com.example.midterm2.Controller;
 
+import com.example.midterm2.Entity.AuthenticationRequest;
 import com.example.midterm2.Entity.User;
 import com.example.midterm2.Exceptions.ResourceNotFoundException;
 import com.example.midterm2.JWT.AuthenticationResponse;
@@ -13,6 +14,7 @@ import com.example.midterm2.Service.MyUserDetailsService;
 import com.example.midterm2.Status.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +24,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private MyUserDetailsService userDetailsService;
@@ -59,18 +63,18 @@ public class UserController {
     }
 
     // Save user
-    @PostMapping("/customer/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user)
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception {
         try {
-            userRepository.authenticate(
-                    new UsernamePasswordAuthenticationToken(userRepository.getUsername(), userRepository.getPassword())
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         } catch (BadCredentialsException e){
                 throw new Exception("Incorrect username or password", e);
         }
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(userRepository.getUsername());
+                .loadUserByUsername(authenticationRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 

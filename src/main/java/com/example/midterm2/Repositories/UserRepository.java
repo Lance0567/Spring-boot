@@ -8,11 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    void authenticate(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken);
-
-    Object getUsername();
-
-    Object getPassword();
 
 
 }
