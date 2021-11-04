@@ -1,4 +1,4 @@
-package com.example.Spring.Controller;
+package com.example.Spring.Controller.Registration;
 
 
 import lombok.AllArgsConstructor;

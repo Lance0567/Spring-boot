@@ -1,12 +1,10 @@
-package com.example.Spring.Controller;
+package com.example.Spring.Controller.Registration;
 
 import com.example.Spring.AppUser.Entity.User;
 import com.example.Spring.AppUser.Service.UserService;
 import com.example.Spring.AppUser.StatusRole.UserRole;
-import com.example.Spring.Controller.Registration.EmailValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.jta.UserTransactionAdapter;
 
 @Service
 @AllArgsConstructor

@@ -23,9 +23,7 @@ import java.util.Collections;
 public class User implements UserDetails {
 
     @Id
-    @SequenceGenerator(name = "customer_id_seq", sequenceName = "customer_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "customer_id_seq", sequenceName = "customer_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_seq")
     private Long id;
     private String firstName;
@@ -34,8 +32,8 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    private Boolean locked;
-    private Boolean enabled;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
     public User(String firstName, String lastName, String email,
                 String password, UserRole userRole) {
