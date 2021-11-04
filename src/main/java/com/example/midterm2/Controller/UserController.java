@@ -45,6 +45,11 @@ public class UserController {
         return this.userRepository.findAll();
     }
 
+    @RequestMapping("/hello")
+    public String hello() {
+        return "Hello World";
+    }
+
     // Get user by id
     @GetMapping("/customer/{id}")
     public ResponseEntity<User> getUserById(
