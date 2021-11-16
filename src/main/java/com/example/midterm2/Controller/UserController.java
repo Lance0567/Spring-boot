@@ -39,7 +39,7 @@ public class UserController {
                 .orElseThrow(
                         () ->
                                 new ResourceNotFoundException(
-                                        "Customer not found for this id :: " + userId
+                                        "Employee not found for this id :: " + userId
                                 )
                 );
         return ResponseEntity.ok().body(user);
@@ -86,7 +86,7 @@ public class UserController {
                 .orElseThrow(
                         () ->
                                 new ResourceNotFoundException(
-                                        "Customer not found for this id :: " + userId
+                                        "Employee not found for this id :: " + userId
                                 )
                 );
 
@@ -109,7 +109,7 @@ public class UserController {
                 .orElseThrow(
                         () ->
                                 new ResourceNotFoundException(
-                                        "Customer not found for this id :: " + userId
+                                        "User not found for this id :: " + userId
                                 )
                 );
         userRepository.delete(user);
