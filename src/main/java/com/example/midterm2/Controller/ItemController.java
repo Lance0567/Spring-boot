@@ -57,7 +57,7 @@ public class ItemController {
             item.setPrice(itemRequest.getPrice());
             System.out.println("Item Successfully updated");
             return itemRepository.save(item);
-        }).orElseThrow(() -> new ResourceNotFoundException("User id " + itemId + "not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Customer id " + itemId + "not found"));
     }
 
 
