@@ -7,27 +7,63 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "customer")
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity(name = "User")
+@Table(
+        name = "customer",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "customer_email_unique", columnNames = "email")
+        })
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @SequenceGenerator(
+            name = "customer_sequence",
+            sequenceName = "customer_id_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = IDENTITY,
+            generator = "customer_id_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    private Long id;
 
-    @Column(nullable = false, unique = true, length = 45)
+    @Column(
+            nullable = false,
+            unique = true,
+            columnDefinition = "TEXT",
+            length = 45
+    )
     private String email;
 
-    @Column(nullable = false, length = 25)
+    @Column(
+            name = "username",
+            nullable = false,
+            length = 25
+    )
     private String username;
 
-    @Column(nullable = false, length = 50)
+    @Column(
+            name = "password",
+            nullable = false
+    )
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            mappedBy = "user")
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "user"
+    )
+
     private Set<Item> items = new HashSet<>();
+
 
     public User() {
     }

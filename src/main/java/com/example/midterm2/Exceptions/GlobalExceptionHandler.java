@@ -1,4 +1,4 @@
-package com.example.midterm2.Exepception;
+package com.example.midterm2.Exceptions;
 
 import java.util.Date;
 

@@ -1,7 +1,7 @@
 package com.example.midterm2.Controller;
 
 import com.example.midterm2.Entity.Item;
-import com.example.midterm2.Exepception.ResourceNotFoundException;
+import com.example.midterm2.Exceptions.ResourceNotFoundException;
 import com.example.midterm2.Repositories.ItemRepository;
 import com.example.midterm2.Repositories.UserRepository;
 import com.example.midterm2.Status.Status;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class ItemController {
 
     @Autowired
@@ -57,7 +57,7 @@ public class ItemController {
             item.setPrice(itemRequest.getPrice());
             System.out.println("Item Successfully updated");
             return itemRepository.save(item);
-        }).orElseThrow(() -> new ResourceNotFoundException("User id " + itemId + "not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Customer id " + itemId + "not found"));
     }
 
 
