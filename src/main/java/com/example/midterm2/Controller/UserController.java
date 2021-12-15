@@ -2,7 +2,7 @@ package com.example.midterm2.Controller;
 
 import com.example.midterm2.Entity.JwtResponse;
 import com.example.midterm2.Entity.User;
-import com.example.midterm2.Exepception.ResourceNotFoundException;
+import com.example.midterm2.Exceptions.ResourceNotFoundException;
 import com.example.midterm2.Repositories.UserRepository;
 import java.util.HashMap;
 import java.util.List;
