@@ -1,5 +1,6 @@
 package com.example.midterm2.Controller;
 
+import com.example.midterm2.Entity.JwtResponse;
 import com.example.midterm2.Entity.User;
 import com.example.midterm2.Exepception.ResourceNotFoundException;
 import com.example.midterm2.Repositories.UserRepository;
@@ -7,20 +8,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.midterm2.Services.MyUserDetailsService;
 import com.example.midterm2.Status.Status;
+import com.example.midterm2.Utils.JwtUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtility jwtUtility;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     //get users
     @GetMapping("/customer")
@@ -45,7 +61,29 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    //save user
+    // authenticate user
+    @PostMapping("/authenticate")
+    public JwtResponse authenticate(@RequestBody User user) throws Exception {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()
+                    )
+            );
+        } catch (BadCredentialsException e) {
+            throw new Exception("Invalid credentials", e);
+        }
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+
+        final String token = jwtUtility.generateToken(userDetails);
+
+        return new JwtResponse(token);
+    }
+
+    // save user
     @PostMapping("/customer/register")
     public Status registerUser(@RequestBody User user) {
         userRepository.save(user);
